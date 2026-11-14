@@ -6,14 +6,20 @@ import type { Schema } from '../amplify/data/resource';
 
 export type RunnerData = ReturnType<typeof generateClient<Schema>>;
 
-/** Configure Amplify from the outputs file and sign in as the runner's
- * household (editors) account. All calls go through userPool. */
+/** amplify_outputs.json as a file path, or the JSON itself (env var). */
+type OutputsSource = { path: string } | { json: string };
+
+const readOutputs = (src: OutputsSource) =>
+  'json' in src ? JSON.parse(src.json) : JSON.parse(readFileSync(src.path, 'utf8'));
+
+/** Configure Amplify from the outputs and sign in as the runner's household
+ * (editors) account. All calls go through userPool. */
 export async function connect(
-  outputsPath: string,
+  outputs: OutputsSource,
   username: string,
   password: string,
 ): Promise<RunnerData> {
-  Amplify.configure(JSON.parse(readFileSync(outputsPath, 'utf8')));
+  Amplify.configure(readOutputs(outputs));
   await signOut().catch(() => {});
   await signIn({ username, password });
   return generateClient<Schema>({ authMode: 'userPool' });

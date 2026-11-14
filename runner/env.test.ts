@@ -15,7 +15,7 @@ describe('parseEnv', () => {
       password: 'p',
       bridgeIp: '192.168.4.47',
       appKey: 'k',
-      outputsPath: 'amplify_outputs.json',
+      outputs: { path: 'amplify_outputs.json' },
       pollMs: 15_000,
       heartbeatMs: 30_000,
     });
@@ -27,7 +27,8 @@ describe('parseEnv', () => {
       RUNNER_POLL_MS: '5',
       RUNNER_HEARTBEAT_MS: '9',
     });
-    expect(env.outputsPath).toBe('/x.json');
+    expect(env.outputs).toEqual({ path: '/x.json' });
+    expect(parseEnv({ ...ok, AMPLIFY_OUTPUTS_JSON: '{}' }).outputs).toEqual({ json: '{}' });
     expect(env.pollMs).toBe(5);
     expect(env.heartbeatMs).toBe(9);
   });

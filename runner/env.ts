@@ -4,7 +4,9 @@ interface RunnerEnv {
   password: string;
   bridgeIp: string;
   appKey: string;
-  outputsPath: string;
+  /** Path to amplify_outputs.json — or the JSON itself via AMPLIFY_OUTPUTS_JSON
+   * (Dockge's Docker-in-Docker can't bind-mount a single stack file reliably). */
+  outputs: { path: string } | { json: string };
   /** Poll interval as a backstop under the live subscription. */
   pollMs: number;
   heartbeatMs: number;
@@ -21,7 +23,9 @@ export function parseEnv(env: Record<string, string | undefined>): RunnerEnv {
     password: env.RUNNER_PASSWORD as string,
     bridgeIp: env.HUE_BRIDGE_IP as string,
     appKey: env.HUE_APP_KEY as string,
-    outputsPath: env.AMPLIFY_OUTPUTS ?? 'amplify_outputs.json',
+    outputs: env.AMPLIFY_OUTPUTS_JSON
+      ? { json: env.AMPLIFY_OUTPUTS_JSON }
+      : { path: env.AMPLIFY_OUTPUTS ?? 'amplify_outputs.json' },
     pollMs: Number(env.RUNNER_POLL_MS ?? 15_000),
     heartbeatMs: Number(env.RUNNER_HEARTBEAT_MS ?? 30_000),
   };

@@ -3,7 +3,8 @@
  * desired Scene (written by the phone app) into Hue bridge commands, 24/7.
  *
  *   env: RUNNER_USERNAME / RUNNER_PASSWORD (household Cognito account),
- *        HUE_BRIDGE_IP / HUE_APP_KEY, AMPLIFY_OUTPUTS (path, default ./amplify_outputs.json)
+ *        HUE_BRIDGE_IP / HUE_APP_KEY, and the backend outputs as AMPLIFY_OUTPUTS (file path,
+ *        default ./amplify_outputs.json) or AMPLIFY_OUTPUTS_JSON (the JSON itself)
  *
  * Wiring only — every decision lives in tested modules (animator, loop, mirror…).
  */
@@ -21,7 +22,7 @@ const log = (msg: string) => console.log(`[${new Date().toISOString()}] ${msg}`)
 
 async function main() {
   const env = parseEnv(process.env);
-  const data = await connect(env.outputsPath, env.username, env.password);
+  const data = await connect(env.outputs, env.username, env.password);
   log(`signed in as ${env.username}`);
   const hue = createHueClient(env.bridgeIp, env.appKey, nodeTransport);
   const loop = createLoop({ hue, rng: Math.random, setTimeout, clearTimeout, log });

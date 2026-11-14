@@ -1,6 +1,7 @@
 # Dockge stack for the umbrel box. No `ports:` — the runner is outbound-only.
-# Secrets come from the stack's .env (never committed): RUNNER_USERNAME,
-# RUNNER_PASSWORD, HUE_APP_KEY. amplify_outputs.json is mounted read-only.
+# Everything comes from the stack's .env (never committed): RUNNER_USERNAME,
+# RUNNER_PASSWORD, HUE_APP_KEY, and AMPLIFY_OUTPUTS_JSON (the backend's
+# amplify_outputs.json on one line — Dockge's dind can't bind-mount a stack file).
 services:
   runner:
     image: ghcr.io/johnpc/holiday-hue-runner:main
@@ -11,6 +12,4 @@ services:
       RUNNER_PASSWORD: ${RUNNER_PASSWORD:?set in .env}
       HUE_BRIDGE_IP: ${HUE_BRIDGE_IP:-192.168.4.47}
       HUE_APP_KEY: ${HUE_APP_KEY:?set in .env}
-      AMPLIFY_OUTPUTS: /config/amplify_outputs.json
-    volumes:
-      - ./amplify_outputs.json:/config/amplify_outputs.json:ro
+      AMPLIFY_OUTPUTS_JSON: ${AMPLIFY_OUTPUTS_JSON:?set in .env}

@@ -15,9 +15,14 @@ describe('connect', () => {
   it('configures Amplify, clears any session, signs in, returns a client', async () => {
     amp.signOut.mockRejectedValue(new Error('no session'));
     amp.signIn.mockResolvedValue({});
-    const data = await connect('/o.json', 'u', 'p');
+    const data = await connect({ path: '/o.json' }, 'u', 'p');
     expect(amp.configure).toHaveBeenCalledWith({ auth: {} });
     expect(amp.signIn).toHaveBeenCalledWith({ username: 'u', password: 'p' });
     expect(data.models).toBeDefined();
+  });
+  it('accepts the outputs JSON inline', async () => {
+    amp.signIn.mockResolvedValue({});
+    await connect({ json: '{"data":{}}' }, 'u', 'p');
+    expect(amp.configure).toHaveBeenLastCalledWith({ data: {} });
   });
 });
