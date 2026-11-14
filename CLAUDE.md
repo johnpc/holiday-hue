@@ -144,9 +144,13 @@ AWS_PROFILE=personal npx ampx sandbox --once
 ## Key facts
 
 - **Repo:** `johnpc/holiday-hue`. **Bundle id:** `com.johncorser.holidayhue`. **Team:** `JW5SC3NYUV`.
-- **AWS:** profile `personal`, region `us-west-2`. Personal sandbox stack:
-  `amplify-holidayhue-xss-sandbox-df764a2c97`. CI deploys its own `ci-<run id>` sandbox per run and
-  tears it down (`scripts/sandbox.mjs`); `sandbox-cleanup.yml` sweeps leaks.
+- **AWS:** profile `personal`, region `us-west-2`. **Prod = Amplify Hosting app `d8ltdg7pl8oq`**
+  (GitHub-connected; a push to `main` runs `ampx pipeline-deploy` + the web build; URL
+  `https://main.d8ltdg7pl8oq.amplifyapp.com`). `npm run prod-config` pulls its outputs. The umbrel
+  runner and John's phones use PROD. Personal dev sandbox: `amplify-holidayhue-xss-sandbox-df764a2c97`
+  (`npm run e2e-config`) — local `npm run test:e2e` runs against it, never against prod, so a test
+  flipping the lights off only flips the sandbox. CI deploys its own `ci-<run id>` sandbox per run
+  and tears it down (`scripts/sandbox.mjs`); `sandbox-cleanup.yml` sweeps leaks.
 - **CI runs on the Mac mini** (`runs-on: [self-hosted, mac-mini]`) for quality, acceptance, and iOS
   deploy — John's rule. Sandbox deploy/teardown + Android + the runner image build run on
   `ubuntu-latest` (they need the `aws` CLI / JDK / Docker). Runner dir on the mini:
@@ -156,8 +160,14 @@ AWS_PROFILE=personal npx ampx sandbox --once
   the runner stack's `.env` on umbrel. The bridge cert is Signify-signed, so the runner's transport
   disables TLS verification for that one LAN host.
 - **Runner deploy (umbrel 192.168.7.211, Dockge dind):** stack `holiday-hue` at
-  `/opt/stacks/holiday-hue/compose.yaml`; update with
-  `sudo docker exec dockge_dockge_1 docker compose -p holiday-hue -f /opt/stacks/holiday-hue/compose.yaml pull && … up -d`.
+  `/opt/stacks/holiday-hue/compose.yaml` (host path
+  `~/umbrel/app-data/dockge/data/dockge-stacks/holiday-hue/`); its `.env` carries the creds and
+  `AMPLIFY_OUTPUTS_JSON` (prod outputs, one line). Dind can't bind-mount stack files and the GHCR
+  package is private until John flips it public, so today the image is built IN dind from a `git
+archive` tarball: `git archive HEAD | ssh umbrel … 'sudo docker exec -i dockge_dockge_1 docker build
+-t holiday-hue-runner:local -f runner/Dockerfile - < /tmp/hh.tar'` then `… compose up -d
+--force-recreate`. Once the package is public, switch the stack image back to
+  `ghcr.io/johnpc/holiday-hue-runner:main` and use `compose pull`.
 - **Secrets (GitHub):** `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `TEST_USERNAME`,
   `TEST_PASSWORD`, `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_CONTENT`, `TEAM_ID`, `CI_KEYCHAIN_PASSWORD`.
 - **Local:** `.env.local` holds `TEST_USERNAME`/`TEST_PASSWORD` (sandbox editor) and

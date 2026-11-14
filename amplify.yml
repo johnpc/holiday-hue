@@ -1,0 +1,23 @@
+# Amplify Hosting build spec (overrides the console spec). Lists the dot-folder
+# explicitly: the default '**/*' glob silently drops .well-known/, which breaks
+# the Apple app-site-association file (password AutoFill for the iOS app).
+version: 1
+backend:
+  phases:
+    build:
+      commands:
+        - npm ci --cache .npm --prefer-offline
+        - npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID
+frontend:
+  phases:
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: dist
+    files:
+      - '**/*'
+      - '.well-known/**/*'
+  cache:
+    paths:
+      - .npm/**/*

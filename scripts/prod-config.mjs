@@ -2,13 +2,13 @@
  * Pull amplify_outputs.json from the deployed `main` backend (Amplify Hosting
  * app), waiting out an in-progress deployment — `ampx generate outputs` hard-
  * fails with DeploymentInProgressError mid-deploy, which is a transient race.
- * APP_ID is filled in once the Amplify Hosting app exists (see CLAUDE.md).
+ * APP_ID is the Amplify Hosting app for johnpc/holiday-hue (branch main = prod).
  */
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 
 const run = promisify(execFile);
-const APP_ID = process.env.AMPLIFY_APP_ID ?? 'REPLACE_WITH_AMPLIFY_APP_ID';
+const APP_ID = process.env.AMPLIFY_APP_ID ?? 'd8ltdg7pl8oq';
 const BRANCH = 'main';
 const PROFILE = 'personal';
 const ARGS = [
