@@ -21,6 +21,11 @@
   --hh-text: #1f1b17;
   --hh-text-muted: #675f57;
   --hh-bulb-socket: #2b2622;
+  /* The preview card is a night sky in BOTH schemes so bulbs read as lit. */
+  --hh-night: #15121a;
+  --hh-night-border: #2a2531;
+  --hh-night-wire: #3a3442;
+  --hh-night-text: #cfc7d6;
   --hh-online: #1f7a4d;
   --hh-offline: #9a948d;
 

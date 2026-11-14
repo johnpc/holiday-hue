@@ -9,7 +9,6 @@ export function StatusChip({ now = Date.now }: { now?: () => number }) {
   const count = lights.data?.length ?? 0;
   return (
     <span
-      slot="end"
       className={`status-chip${online ? ' status-chip--online' : ''}`}
       data-testid="runner-status"
       data-online={online}

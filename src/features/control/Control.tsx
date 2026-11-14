@@ -1,4 +1,4 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonToolbar } from '@ionic/react';
 import { SOLID_THEME_ID } from '../../domain/themes';
 import { LoadState } from '../shell/LoadState';
 import { TabBar } from '../shell/TabBar';
@@ -6,6 +6,7 @@ import { ColorPicker } from './ColorPicker';
 import { PatternPicker } from './PatternPicker';
 import { PowerRow } from './PowerRow';
 import { Preview } from './Preview';
+import { SceneCaption } from './SceneCaption';
 import { Sliders } from './Sliders';
 import { StatusChip } from './StatusChip';
 import { TargetPicker } from './TargetPicker';
@@ -21,13 +22,15 @@ export function Control() {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Holiday Hue</IonTitle>
-          <StatusChip />
+          <div className="control__head">
+            <h1 className="control__title hh-heading">Holiday Hue</h1>
+            <StatusChip />
+          </div>
         </IonToolbar>
       </IonHeader>
       <IonContent className="control">
         <LoadState isLoading={isLoading} isError={isError} onRetry={refetch}>
-          <Preview scene={scene} />
+          <Preview scene={scene} caption={<SceneCaption scene={scene} />} />
           <PowerRow on={scene.on} onChange={(on) => set({ on })} />
           <section className="control__section">
             <p className="hh-kicker">Theme</p>

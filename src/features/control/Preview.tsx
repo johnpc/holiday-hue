@@ -1,12 +1,15 @@
+import type { ReactNode } from 'react';
 import type { SceneState } from '../../domain/scene';
 import { PREVIEW_BULBS, usePreviewFrame } from './usePreviewFrame';
 
-/** A string of bulbs animated by the real pattern engine. */
-export function Preview({ scene }: { scene: SceneState }) {
+/** A string of bulbs animated by the real pattern engine, on a night-sky card
+ * (always dark, so white bulbs glow in light mode too). */
+export function Preview({ scene, caption }: { scene: SceneState; caption?: ReactNode }) {
   const frames = usePreviewFrame(scene);
   return (
     <div className="preview hh-card" data-testid="preview" data-on={scene.on}>
       <div className="preview__wire" />
+      {caption}
       {Array.from({ length: PREVIEW_BULBS }, (_, i) => {
         const f = frames[i];
         const style = f
