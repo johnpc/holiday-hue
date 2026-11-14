@@ -1,0 +1,13 @@
+.household--center {
+  --padding-top: 20vh;
+  text-align: center;
+}
+.household__card {
+  max-width: 24rem;
+  margin: 0 auto;
+  padding: 28px 22px;
+}
+.household__emoji {
+  font-size: 2.4rem;
+  margin: 0;
+}

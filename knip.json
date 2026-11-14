@@ -1,0 +1,17 @@
+{
+  "entry": ["amplify/backend.ts", "e2e/steps/*.ts"],
+  "project": ["src/**/*.{ts,tsx}", "amplify/**/*.ts", "runner/**/*.ts", "e2e/**/*.ts"],
+  "ignoreDependencies": [
+    "@capacitor/ios",
+    "@capacitor/assets",
+    "@capacitor/app",
+    "@capacitor/haptics",
+    "@capacitor/keyboard",
+    "@capacitor/status-bar",
+    "esbuild",
+    "@aws-amplify/backend-cli"
+  ],
+  "vitest": {
+    "config": ["vite.config.ts"]
+  }
+}

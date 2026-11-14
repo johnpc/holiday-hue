@@ -1,0 +1,54 @@
+/* Loading skeletons — a shimmering placeholder that previews the content shape
+   before it arrives. --hh-* tokens only. */
+
+.hh-skeleton {
+  display: block;
+  background: var(--hh-surface-2);
+  background-image: linear-gradient(
+    90deg,
+    var(--hh-surface-2) 0%,
+    var(--hh-surface) 50%,
+    var(--hh-surface-2) 100%
+  );
+  background-size: 200% 100%;
+  animation: hh-skeleton-sweep 1.4s ease-in-out infinite;
+}
+
+@keyframes hh-skeleton-sweep {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* A vertical stack of card rows standing in for a list while it loads. */
+.hh-skeleton-rows {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--hh-gap);
+  width: 100%;
+  max-width: 40rem;
+}
+
+.hh-skeleton-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px solid var(--hh-border);
+  border-radius: var(--hh-radius);
+  background: var(--hh-surface);
+}
+
+/* Respect reduced-motion: hold a static placeholder instead of sweeping. */
+@media (prefers-reduced-motion: reduce) {
+  .hh-skeleton {
+    animation: none;
+    background-image: none;
+  }
+}

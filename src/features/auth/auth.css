@@ -1,0 +1,72 @@
+.auth__body {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.auth__title {
+  font-size: 1.6rem;
+  margin: 8px 0 0;
+}
+
+.auth__subtext {
+  margin: 0 0 8px;
+}
+
+.auth__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth__label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--hh-text-muted);
+}
+
+.auth__input {
+  background: var(--hh-surface);
+  border: 1px solid var(--hh-border);
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 1rem;
+  color: var(--hh-text);
+}
+
+.auth__cta {
+  margin-top: 8px;
+  background: var(--hh-accent);
+  color: var(--hh-accent-contrast);
+  border: none;
+  border-radius: 999px;
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.auth__cta:disabled {
+  opacity: 0.6;
+}
+
+.auth__error {
+  color: var(--hh-accent-strong);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.auth__alt {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--hh-text-muted);
+}
+
+.auth__alt-link {
+  /* accent-strong: this is TEXT on the light bg (accent is only 4.35:1 there). */
+  color: var(--hh-accent-strong);
+  font-weight: 600;
+  cursor: pointer;
+}

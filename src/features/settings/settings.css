@@ -1,0 +1,20 @@
+/* Settings screen — --hh-* tokens only. */
+.settings__card {
+  margin: var(--hh-gap);
+  padding: var(--hh-gap);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.settings__card .hh-kicker {
+  margin: 0;
+}
+.settings__email {
+  margin: 0;
+  font-weight: 600;
+  color: var(--hh-text);
+  word-break: break-all;
+}
+.settings ion-content {
+  padding-bottom: 80px;
+}

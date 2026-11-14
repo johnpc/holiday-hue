@@ -1,0 +1,42 @@
+/* Error boundary fallback — --hh-* tokens only. Tokens only. */
+.error-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 22rem;
+  margin: 3rem auto 0;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  border-radius: var(--hh-radius);
+  background: var(--hh-surface);
+  box-shadow: var(--hh-shadow);
+}
+
+.error-fallback__emoji {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.error-fallback__title {
+  font-size: 1.3rem;
+}
+
+.error-fallback__reload {
+  margin-top: 0.5rem;
+  padding: 0.7rem 1.6rem;
+  font-weight: 800;
+  color: var(--hh-accent-contrast);
+  background: var(--hh-accent);
+  border: none;
+  border-radius: var(--hh-radius);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.error-fallback__home {
+  padding: 0.55rem 1.4rem;
+  font-weight: 700;
+  color: var(--hh-accent-strong);
+  text-decoration: none;
+}

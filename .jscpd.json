@@ -1,0 +1,9 @@
+{
+  "threshold": 0,
+  "minLines": 8,
+  "minTokens": 70,
+  "format": ["typescript", "tsx"],
+  "ignore": ["**/*.test.*", "**/fixtures/**", "dist/**", "coverage/**", ".amplify/**"],
+  "absolute": true,
+  "gitignore": true
+}

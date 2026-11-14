@@ -1,0 +1,127 @@
+/**
+ * Holiday Hue design tokens. Consume `--hh-*` variables and role classes
+ * everywhere — never hardcoded hex/px in feature CSS. Light in :root, dark under
+ * the OS media query AND under an explicit [data-theme] override (Settings).
+ */
+:root {
+  --hh-font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --hh-accent: #b3261e; /* holly red — 6.2:1 on cream */
+  --hh-accent-strong: #8e1a14;
+  --hh-accent-contrast: #ffffff;
+  --hh-accent-soft: #fbe9e6;
+  --hh-green: #1f7a4d;
+  --hh-green-soft: #e3f3ea;
+  --hh-gold: #c99a2e;
+
+  --hh-bg: #f7f3ee;
+  --hh-surface: #ffffff;
+  --hh-surface-2: #f1ebe3;
+  --hh-border: #e4ddd3;
+  --hh-text: #1f1b17;
+  --hh-text-muted: #675f57;
+  --hh-bulb-socket: #2b2622;
+  --hh-online: #1f7a4d;
+  --hh-offline: #9a948d;
+
+  --hh-radius: 16px;
+  --hh-radius-sm: 10px;
+  --hh-gap: 16px;
+  --hh-focus-ring: 3px solid var(--hh-accent-strong);
+  --hh-shadow: 0 1px 2px rgba(40, 24, 10, 0.05), 0 6px 20px rgba(40, 24, 10, 0.08);
+
+  --ion-background-color: var(--hh-bg);
+  --ion-text-color: var(--hh-text);
+  --ion-font-family: var(--hh-font-sans);
+  --ion-toolbar-background: var(--hh-surface);
+  --ion-toolbar-color: var(--hh-text);
+  --ion-color-primary: var(--hh-accent);
+  --ion-color-primary-contrast: var(--hh-accent-contrast);
+  --ion-color-primary-shade: var(--hh-accent-strong);
+  --ion-color-primary-tint: #c24a43;
+  --ion-item-background: var(--hh-surface);
+  --ion-tab-bar-background: var(--hh-surface);
+}
+
+/* Dark tokens, applied by the OS preference unless the app pins light… */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --hh-accent-soft: #3a1c19;
+    --hh-green-soft: #16301f;
+    --hh-bg: #121014;
+    --hh-surface: #1c191f;
+    --hh-surface-2: #26222b;
+    --hh-border: #332e38;
+    --hh-text: #f3eee8;
+    --hh-text-muted: #a69e95;
+    --hh-bulb-socket: #0b0a0c;
+    --hh-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 6px 20px rgba(0, 0, 0, 0.45);
+  }
+}
+/* …or by the explicit in-app Dark choice. */
+:root[data-theme='dark'] {
+  --hh-accent-soft: #3a1c19;
+  --hh-green-soft: #16301f;
+  --hh-bg: #121014;
+  --hh-surface: #1c191f;
+  --hh-surface-2: #26222b;
+  --hh-border: #332e38;
+  --hh-text: #f3eee8;
+  --hh-text-muted: #a69e95;
+  --hh-bulb-socket: #0b0a0c;
+  --hh-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 6px 20px rgba(0, 0, 0, 0.45);
+}
+
+body {
+  font-family: var(--hh-font-sans);
+}
+
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible,
+[role='button']:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: var(--hh-focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--hh-radius-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Safe area: keep the first toolbar clear of the notch / Dynamic Island. */
+ion-header ion-toolbar:first-of-type {
+  padding-top: max(var(--ion-safe-area-top, 0px), env(safe-area-inset-top, 0px));
+}
+ion-tab-bar {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.hh-heading {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--hh-text);
+}
+.hh-kicker {
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hh-accent-strong);
+}
+.hh-muted {
+  color: var(--hh-text-muted);
+}
+.hh-card {
+  background: var(--hh-surface);
+  border: 1px solid var(--hh-border);
+  border-radius: var(--hh-radius);
+  box-shadow: var(--hh-shadow);
+}
