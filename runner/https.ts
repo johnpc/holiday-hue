@@ -7,6 +7,12 @@ export interface JsonRequest {
   body?: string;
 }
 
+/** `/clip/v2/resource/light/<id>` → `light/<id>` — enough to identify the call. */
+const shortPath = (url: string) => url.replace(/^.*\/resource\//, '');
+/** The bridge answers rate limits with an HTML page; keep only JSON error text. */
+const summary = (body: string) =>
+  body.trimStart().startsWith('<') ? '' : ` ${body.slice(0, 160)}`;
+
 /** Minimal JSON-over-HTTPS transport the Hue client is injected with. */
 export type JsonTransport = (req: JsonRequest) => Promise<string>;
 
@@ -29,7 +35,9 @@ export const nodeTransport: JsonTransport = (req) =>
           const status = res.statusCode ?? 0;
           if (status >= 200 && status < 300) resolve(data);
           else
-            reject(new Error(`hue: HTTP ${status} ${req.method} ${req.url} ${data.slice(0, 200)}`));
+            reject(
+              new Error(`hue: HTTP ${status} ${req.method} ${shortPath(req.url)}${summary(data)}`),
+            );
         });
       },
     );

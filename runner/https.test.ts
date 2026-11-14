@@ -49,10 +49,16 @@ describe('nodeTransport', () => {
   });
   it('rejects on a non-2xx status with context', async () => {
     fake.status = 403;
-    fake.body = 'nope';
+    fake.body = '{"errors":[{"description":"nope"}]}';
     await expect(nodeTransport({ ...req, method: 'GET', body: undefined })).rejects.toThrow(
-      'HTTP 403 GET https://h/x nope',
+      'HTTP 403 GET https://h/x {"errors":[{"description":"nope"}]}',
     );
+  });
+  it('drops the bridge HTML page from rate-limit errors and shortens the path', async () => {
+    fake.status = 429;
+    fake.body = '<!DOCTYPE HTML><html>hue</html>';
+    const url = 'https://1.2.3.4/clip/v2/resource/light/abc';
+    await expect(nodeTransport({ ...req, url })).rejects.toThrow(/^hue: HTTP 429 PUT light\/abc$/);
   });
   it('rejects on socket errors and timeouts', async () => {
     fake.emitError = true;

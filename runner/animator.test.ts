@@ -68,6 +68,6 @@ describe('planTick', () => {
     const fast = { ...steady, patternId: 'alternate', speed: 10 };
     const plan = planTick({ scene: fast, lights: many, tick: 0, rng, prev: new Map() });
     expect(plan.commands).toHaveLength(30);
-    expect(plan.nextDelayMs).toBe(3300);
+    expect(plan.nextDelayMs).toBe(4500);
   });
 });

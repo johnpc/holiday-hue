@@ -14,8 +14,9 @@ export interface Plan {
   nextDelayMs: number;
 }
 
-/** Bridge rate limit: ~10 light PUTs/sec. We leave headroom. */
-export const MS_PER_COMMAND = 110;
+/** Bridge rate limit: ~10 light PUTs/sec; other apps (Home Assistant) share it,
+ * so we leave real headroom. */
+export const MS_PER_COMMAND = 150;
 /** Smooth each change over most of the interval so twinkles ramp, not snap. */
 const TRANSITION_RATIO = 0.6;
 const MAX_TRANSITION_MS = 1500;

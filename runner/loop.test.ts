@@ -71,8 +71,21 @@ describe('createLoop', () => {
     const delay = await loop.runTick();
     expect(setLight).toHaveBeenCalledTimes(3);
     expect(sleep).toHaveBeenCalledTimes(2);
-    expect(sleep).toHaveBeenCalledWith(110);
-    expect(delay).toBe(1200 - 3 * 110);
+    expect(sleep).toHaveBeenCalledWith(150);
+    expect(delay).toBe(1200 - 3 * 150);
+  });
+
+  it('retries a rate-limited write once after a pause', async () => {
+    const setLight = vi
+      .fn<() => Promise<void>>()
+      .mockRejectedValueOnce(new Error('hue: HTTP 429 PUT light/a'))
+      .mockResolvedValue(undefined);
+    const { loop, sleep } = make(setLight);
+    loop.setScene(steady);
+    await loop.runTick();
+    expect(setLight).toHaveBeenCalledTimes(2);
+    expect(sleep).toHaveBeenCalledWith(600);
+    expect(loop.lastError()).toBeNull();
   });
 
   it('records bridge errors without crashing', async () => {
@@ -91,5 +104,33 @@ describe('createLoop', () => {
     expect(timers).toHaveLength(2);
     loop.stop();
     timers[1].fn();
+  });
+
+  it('ignores an identical scene (the poll) — no resend, no reschedule', async () => {
+    const { loop, setLight, timers } = make();
+    loop.setScene(steady);
+    await loop.runTick();
+    loop.start();
+    loop.setScene({ ...steady });
+    expect(timers).toHaveLength(1);
+    await loop.runTick();
+    expect(setLight).toHaveBeenCalledTimes(1);
+  });
+
+  it('never runs two ticks at once: a change mid-tick makes the NEXT tick immediate', async () => {
+    let release: () => void = () => {};
+    const setLight = vi.fn(() => new Promise<void>((r) => (release = r)));
+    const { loop, timers } = make(setLight);
+    loop.setScene(steady);
+    loop.start();
+    timers[0].fn(); // tick 1 starts and blocks on the bridge
+    await Promise.resolve();
+    loop.setScene({ ...steady, brightness: 10 }); // arrives mid-tick
+    timers[0].fn(); // a stray second fire must be a no-op while busy
+    expect(setLight).toHaveBeenCalledTimes(1);
+    release();
+    await new Promise((r) => setTimeout(r, 0));
+    expect(timers.at(-1)?.ms).toBe(0); // rescheduled immediately for the new scene
+    expect(timers).toHaveLength(2);
   });
 });
