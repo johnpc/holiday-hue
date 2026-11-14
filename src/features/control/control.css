@@ -149,6 +149,10 @@
   opacity: 0.7;
   font-weight: 500;
 }
+.target-empty {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+}
 .chips__hint {
   margin: 8px 0 0;
   font-size: 0.85rem;

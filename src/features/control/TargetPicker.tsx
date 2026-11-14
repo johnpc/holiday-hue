@@ -12,6 +12,13 @@ export function TargetPicker({ value, onChange }: Props) {
   const { data: lights = [] } = useLights();
   const rooms = groupRooms(lights);
   const options = [{ id: ALL_LIGHTS, name: 'All lights', count: lights.length }, ...rooms];
+  if (lights.length === 0) {
+    return (
+      <p className="hh-muted target-empty" data-testid="target-empty">
+        No lights discovered yet — the runner mirrors your bridge's rooms here once it's running.
+      </p>
+    );
+  }
   return (
     <div className="chips" role="radiogroup" aria-label="Which lights" data-testid="target-picker">
       {options.map((o) => (

@@ -16,6 +16,7 @@ export function AuthPage({
     <IonPage>
       <IonContent fullscreen className="auth">
         <div className="auth__body">
+          <img className="auth__mark" src="/icons/icon-192.png" alt="" width="72" height="72" />
           <h1 className="auth__title hh-heading">{title}</h1>
           <p className="auth__subtext hh-muted">{subtitle}</p>
           {children}

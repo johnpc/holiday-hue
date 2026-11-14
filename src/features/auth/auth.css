@@ -7,6 +7,14 @@
   gap: 14px;
 }
 
+.auth__mark {
+  display: block;
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  margin-bottom: 14px;
+  box-shadow: var(--hh-shadow);
+}
 .auth__title {
   font-size: 1.6rem;
   margin: 8px 0 0;
