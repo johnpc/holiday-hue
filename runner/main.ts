@@ -25,7 +25,8 @@ async function main() {
   const data = await connect(env.outputs, env.username, env.password);
   log(`signed in as ${env.username}`);
   const hue = createHueClient(env.bridgeIp, env.appKey, nodeTransport);
-  const loop = createLoop({ hue, rng: Math.random, setTimeout, clearTimeout, log });
+  const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+  const loop = createLoop({ hue, rng: Math.random, setTimeout, clearTimeout, sleep, log });
 
   let bridgeReachable = false;
   let lightCount = 0;

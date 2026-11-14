@@ -20,6 +20,7 @@ function make(setLight = vi.fn(() => Promise.resolve())) {
   const timers: { fn: () => void; ms: number }[] = [];
   const hue = { setLight } as never as HueClient;
   const log = vi.fn();
+  const sleep = vi.fn(async () => {});
   const loop = createLoop({
     hue,
     rng: () => 0,
@@ -28,10 +29,11 @@ function make(setLight = vi.fn(() => Promise.resolve())) {
       return timers.length as never;
     },
     clearTimeout: vi.fn(),
+    sleep,
     log,
   });
   loop.setLights(lights);
-  return { loop, setLight, timers, log };
+  return { loop, setLight, timers, log, sleep };
 }
 
 describe('createLoop', () => {
@@ -60,6 +62,17 @@ describe('createLoop', () => {
     loop.setScene({ ...steady, brightness: 20 });
     await loop.runTick();
     expect(setLight).toHaveBeenCalledTimes(2);
+  });
+
+  it('spaces writes within a tick and returns the remaining budget', async () => {
+    const { loop, setLight, sleep } = make();
+    loop.setLights([...lights, { ...lights[0], hueId: 'b' }, { ...lights[0], hueId: 'c' }]);
+    loop.setScene(steady);
+    const delay = await loop.runTick();
+    expect(setLight).toHaveBeenCalledTimes(3);
+    expect(sleep).toHaveBeenCalledTimes(2);
+    expect(sleep).toHaveBeenCalledWith(110);
+    expect(delay).toBe(1200 - 3 * 110);
   });
 
   it('records bridge errors without crashing', async () => {

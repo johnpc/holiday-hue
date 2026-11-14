@@ -5,7 +5,7 @@ import { themeColors } from '../src/domain/themes';
 import type { LightCommand } from './hueClient';
 import { selectTargets, type LightInventory } from './inventory';
 
-interface Plan {
+export interface Plan {
   /** hueId → command, only for lights whose state changed since `prev`. */
   commands: { hueId: string; cmd: LightCommand }[];
   /** The frame to remember as `prev` for the next tick. */
@@ -15,7 +15,7 @@ interface Plan {
 }
 
 /** Bridge rate limit: ~10 light PUTs/sec. We leave headroom. */
-const MS_PER_COMMAND = 110;
+export const MS_PER_COMMAND = 110;
 /** Smooth each change over most of the interval so twinkles ramp, not snap. */
 const TRANSITION_RATIO = 0.6;
 const MAX_TRANSITION_MS = 1500;

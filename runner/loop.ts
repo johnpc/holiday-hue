@@ -1,13 +1,24 @@
 import type { LightFrame } from '../src/domain/frame';
 import type { SceneState } from '../src/domain/scene';
-import { planTick } from './animator';
+import { MS_PER_COMMAND, type Plan, planTick } from './animator';
 import type { HueClient } from './hueClient';
 import type { LightInventory } from './inventory';
 
-/** The first rejection's reason, or null when every write landed. */
-function firstFailure(results: PromiseSettledResult<void>[]): string | null {
-  const failed = results.find((r) => r.status === 'rejected');
-  return failed ? String((failed as PromiseRejectedResult).reason) : null;
+/** The plan's delay is the whole tick budget; the paced sends already used part of it. */
+const remainingBudget = (plan: Plan) =>
+  Math.max(0, plan.nextDelayMs - plan.commands.length * MS_PER_COMMAND);
+
+/** Send each light write MS_PER_COMMAND apart (the bridge 429s on bursts);
+ * returns the first failure's reason, or null when every write landed. */
+async function sendPaced(commands: Plan['commands'], deps: LoopDeps): Promise<string | null> {
+  let firstError: string | null = null;
+  for (const [i, { hueId, cmd }] of commands.entries()) {
+    if (i > 0) await deps.sleep(MS_PER_COMMAND);
+    await deps.hue.setLight(hueId, cmd).catch((err: Error) => {
+      firstError ??= String(err);
+    });
+  }
+  return firstError;
 }
 
 interface LoopDeps {
@@ -15,6 +26,8 @@ interface LoopDeps {
   rng: () => number;
   setTimeout: (fn: () => void, ms: number) => ReturnType<typeof globalThis.setTimeout>;
   clearTimeout: (t: ReturnType<typeof globalThis.setTimeout>) => void;
+  /** Pause between light writes so a tick never bursts past the bridge limit. */
+  sleep: (ms: number) => Promise<void>;
   log: (msg: string) => void;
 }
 
@@ -38,12 +51,9 @@ export function createLoop(deps: LoopDeps) {
     const plan = planTick({ scene, lights, tick, rng: deps.rng, prev });
     tick += 1;
     prev = plan.frame;
-    const results = await Promise.allSettled(
-      plan.commands.map(({ hueId, cmd }) => deps.hue.setLight(hueId, cmd)),
-    );
-    lastError = firstFailure(results);
+    lastError = await sendPaced(plan.commands, deps);
     if (lastError) deps.log(`tick: light writes failed: ${lastError}`);
-    return plan.nextDelayMs;
+    return remainingBudget(plan);
   }
 
   function schedule(ms: number) {
